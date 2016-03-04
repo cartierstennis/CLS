@@ -21,10 +21,12 @@ library(ggplot2)
 shinyServer(function(input, output) {
 
     # Loading raw data
-    data.roi <- read.csv("/Users/mli/Desktop/Team_Projects_Twitter/Cartier/CLS_App/data/sample_roi_prod.csv", header = TRUE, stringsAsFactors = FALSE,
-    	                  colClasses=c("character", "Date", "character", rep("integer",6)))
-    data.ad <- read.csv("/Users/mli/Desktop/Team_Projects_Twitter/Cartier/CLS_App/data/sample_ad_prod.csv", header = TRUE, stringsAsFactors = FALSE,
-    	                 colClasses=c(rep("character",4), "Date", rep("character",5)))
+      data.roi <- read.csv("/Users/mli/Desktop/Team_Projects_Twitter/Cartier/CLS_App/data/sample_roi_prod.csv", 
+                           header = TRUE, stringsAsFactors = FALSE,
+                           colClasses=c("Date", "character", "character", rep("integer",3), "character", rep("integer",2)))
+      data.ad <- read.csv("/Users/mli/Desktop/Team_Projects_Twitter/Cartier/CLS_App/data/sample_ad_prod.csv", 
+                          header = TRUE, stringsAsFactors = FALSE,
+                          colClasses=c(rep("character",4), "Date", rep("character",5)))
     
 
     # Creating filter parameters
@@ -32,8 +34,8 @@ shinyServer(function(input, output) {
     # -- 'Active Status'
     cls_active <- unique(data.ad$cls_is_active)
     output$clas_active <- renderUI({
-    	checkboxGroupInput(inputId = "activity", h6("* Please Choose whether CLS Study Activated"), cls_active, selected = "Yes")
-    	})
+      checkboxGroupInput(inputId = "activity", h6("* Please Choose whether CLS Study Activated"), cls_active, selected = "Yes")
+      })
 
     # -- 'Study Type'
     study_type <- unique(data.roi$study_type)
@@ -62,11 +64,6 @@ shinyServer(function(input, output) {
     
 
     # -- Generate 'Group_Type' (plot2) ** Potentially we should do this in SQL when live connected **
-    data.roi$Group_type <- ifelse(data.roi$cohort %in% c(0,1), "Control",
-    	                      ifelse(data.roi$cohort %in% c(6,7), "Exposed",
-    	                      	ifelse(data.roi$cohort %in% c(8,9), "Engaged",
-    	                      		ifelse(data.roi$cohort %in% c(10,11), "Eligible_Lost",
-    	                      			ifelse(data.roi$cohort %in% c(12,13), "Eligible_Filtered", "Unknown"))))) 
 
 
 
@@ -185,17 +182,17 @@ shinyServer(function(input, output) {
      })
 
      output$down <- downloadHandler(
-     	# specify the file name
+      # specify the file name
         filename = function() {
               "Cumulative_advertiser_plot(CLS).pdf"
-        	},
+          },
         # Write the plot back
         content = function(file){
               pdf(file)
               culumlative_adoption_plot()
               dev.off()
         }
-     	)
+      )
 
      output$plot2 <- renderTable({ 
           Adoption_Summary()
@@ -206,6 +203,18 @@ shinyServer(function(input, output) {
 
   }
 )
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
